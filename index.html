@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML/Markdown 实时预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f5f5f7;
+      color: #1d1d1f;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .editor, .preview {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      overflow: auto;
+    }
+
+    textarea {
+      width: 100%;
+      height: calc(100% - 60px);
+      border: none;
+      resize: none;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      background: transparent;
+      color: inherit;
+    }
+
+    textarea:focus {
+      outline: none;
+    }
+
+    .preview {
+      padding: 20px;
+    }
+
+    .preview img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .btn-container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    button {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0063cc;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 10px;
+      }
+      
+      .editor, .preview {
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header style="text-align: center; margin: 40px 0; position: relative;">
+    <div style="position: absolute; right: 20px; top: 0;">
+      <img 
+        src="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=MzA4NTM2MDMzOQ==&mid=2649876444&idx=1&sn=02f4fc4edaa73aa0e4dca5aae4f8b2d6&send_time=" 
+        alt="谦行码语"
+        style="width: 180px; height: 180px;"
+      >
+    </div>
+    <h1 style="font-size: 2.5rem; font-weight: 600; color: #007aff;">代码实时预览器</h1>
+    <h2 style="font-size: 1.2rem; color: #666; margin-top: 10px;">
+      把你的代码贴到左边，点击转化即可！
+    </h2>
+    <div style="margin-top: 20px;">
+      <p style="color: #666; font-size: 1rem;">
+        作者：liqian_liukaining
+      </p>
+    </div>
+  </header>
+  <div class="container">
+    <div class="editor">
+      <textarea id="input" placeholder="在这里输入HTML或Markdown代码..."></textarea>
+    </div>
+    <iframe class="preview" id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+  </div>
+    <div class="btn-container">
+      <button onclick="setMode('html')">HTML 转换</button>
+      <button onclick="setMode('markdown')" style="margin-left: 10px;">Markdown 转换</button>
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    let currentMode = 'html'; // 'markdown' 或 'html'
+    
+    function setMode(mode) {
+      currentMode = mode;
+      renderContent();
+    }
+
+    document.getElementById('input').addEventListener('input', renderContent);
+
+    function renderContent() {
+      const input = document.getElementById('input').value;
+      const preview = document.getElementById('preview');
+      
+      if (currentMode === 'markdown') {
+        // 使用iframe显示Markdown
+        const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <style>
+              body { padding: 20px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+            </style>
+          </head>
+          <body>
+            ${marked.parse(input)}
+          </body>
+          </html>`;
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        preview.src = URL.createObjectURL(blob);
+      } else {
+        // 使用iframe显示HTML
+        const blob = new Blob([input], { type: 'text/html' });
+        preview.src = URL.createObjectURL(blob);
+      }
+    }
+  </script>
+</body>
+</html>
