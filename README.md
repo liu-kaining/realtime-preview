@@ -37,7 +37,7 @@ A simple yet powerful real-time code preview tool for HTML and Markdown, featuri
 
 1. 克隆项目：
    ```bash
-   git clone https://github.com/yourusername/realtime-preview.git
+   git clone git@github.com:liu-kaining/realtime-preview.git
    ```
 2. 打开项目目录：
    ```bash
